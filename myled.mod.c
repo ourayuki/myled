@@ -1,9 +1,6 @@
-#include <linux/build-salt.h>
 #include <linux/module.h>
 #include <linux/vermagic.h>
 #include <linux/compiler.h>
-
-BUILD_SALT;
 
 MODULE_INFO(vermagic, VERMAGIC_STRING);
 MODULE_INFO(name, KBUILD_MODNAME);
@@ -18,31 +15,32 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 	.arch = MODULE_ARCH_INIT,
 };
 
-#ifdef CONFIG_RETPOLINE
+#ifdef RETPOLINE
 MODULE_INFO(retpoline, "Y");
 #endif
 
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0x6624a028, "module_layout" },
-	{ 0x6091b333, "unregister_chrdev_region" },
-	{ 0x6ad547bc, "cdev_del" },
-	{ 0x3cf24f26, "class_destroy" },
-	{ 0x7dedd3d1, "device_destroy" },
-	{ 0xd1c9b6e4, "device_create" },
-	{ 0xfbde855f, "__class_create" },
-	{ 0xa90cd52c, "cdev_add" },
-	{ 0xcc29ee9e, "cdev_init" },
-	{ 0xe3ec2f2b, "alloc_chrdev_region" },
-	{ 0xe97c4103, "ioremap" },
-	{ 0xf4fa543b, "arm_copy_to_user" },
-	{ 0x2e5810c6, "__aeabi_unwind_cpp_pr1" },
-	{ 0xdb7305a1, "__stack_chk_fail" },
-	{ 0x7c32d0f0, "printk" },
-	{ 0x28cc25db, "arm_copy_from_user" },
-	{ 0x8f678b07, "__stack_chk_guard" },
-	{ 0xb1ad28e0, "__gnu_mcount_nc" },
+	{ 0xbd93819b, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0x7485e15e, __VMLINUX_SYMBOL_STR(unregister_chrdev_region) },
+	{ 0xc62d7bf2, __VMLINUX_SYMBOL_STR(cdev_del) },
+	{ 0x459ba96d, __VMLINUX_SYMBOL_STR(class_destroy) },
+	{ 0xc421f172, __VMLINUX_SYMBOL_STR(device_destroy) },
+	{ 0x96cd438e, __VMLINUX_SYMBOL_STR(device_create) },
+	{ 0xa17106ea, __VMLINUX_SYMBOL_STR(__class_create) },
+	{ 0xd6a0d455, __VMLINUX_SYMBOL_STR(cdev_add) },
+	{ 0x33e2ab5a, __VMLINUX_SYMBOL_STR(cdev_init) },
+	{ 0x29537c9e, __VMLINUX_SYMBOL_STR(alloc_chrdev_region) },
+	{ 0x79c5a9f0, __VMLINUX_SYMBOL_STR(ioremap) },
+	{ 0xf4fa543b, __VMLINUX_SYMBOL_STR(arm_copy_to_user) },
+	{ 0x2e5810c6, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr1) },
+	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
+	{ 0xfa2a45e, __VMLINUX_SYMBOL_STR(__memzero) },
+	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
+	{ 0x28cc25db, __VMLINUX_SYMBOL_STR(arm_copy_from_user) },
+	{ 0x8f678b07, __VMLINUX_SYMBOL_STR(__stack_chk_guard) },
+	{ 0xb1ad28e0, __VMLINUX_SYMBOL_STR(__gnu_mcount_nc) },
 };
 
 static const char __module_depends[]
@@ -51,4 +49,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "E129D4580972B82239D9BA1");
+MODULE_INFO(srcversion, "B124088230B9A3C5C97CE21");

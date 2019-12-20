@@ -4,6 +4,8 @@
 #include <linux/device.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+#include <linux/string.h>
+#include <linux/slab.h>
 
 MODULE_AUTHOR("Nagasaka Takumi");
 MODULE_DESCRIPTION("driver for LED contol");
@@ -20,18 +22,36 @@ static volatile u32 *gpio_base = NULL;
 //	return 1;
 //}
 
-static ssize_t led_write(struct file* filp, const char* buf, size_t count, loff_t* pos){
-	char c;
-	if(copy_from_user(&c, buf, sizeof(char))){
+// changed
+static ssize_t led_write(struct file* filp, char __user *buf, size_t count, loff_t* pos){
+	char *newbuf = kmalloc(sizeof(char) * count, GFP_KERNEL);
+	//int buflen = 0;
+	//buflen = strlen(buf);
+	//count = buflen;
+	char command[sizeof(char)*count];
+	if(copy_from_user(newbuf, buf, sizeof(char)*count)){
+		kfree(newbuf);
 		return -EFAULT;
 	}
-	if(c == '0'){
+	sscanf(newbuf, "%s\n", command);
+	if(strcmp(command, "0") == 0){
 		gpio_base[10] = 1 << 25;
 	}
-	else if(c == '1'){
+	else if(strcmp(command, "1") == 0){
 		gpio_base[7] = 1 << 25;
 	}
-	printk(KERN_INFO "receive %c\n", c);
+	else if(strcmp(command, "2") == 0){
+		gpio_base[10] = 1 << 24;
+	}
+	else if(strcmp(command, "3") == 0){
+		gpio_base[7] = 1 << 24;
+	}
+	printk(KERN_INFO "receive %s\n", command);
+
+	if(strcmp(command, "q1") == 0){
+		printk(KERN_INFO "test message\n");
+	}
+	kfree(newbuf);
 	return 1;
 }
 
@@ -56,11 +76,18 @@ static int __init init_mod(void){
 	int retval;
 	gpio_base = ioremap_nocache(0x3f200000, 0xA0);
 
-	const u32 led = 25;
-	const u32 index = led/10;
-	const u32 shift = (led%10)*3;
-	const u32 mask = ~(0x7 << shift);
-	gpio_base[index] = (gpio_base[index] & mask) | (0x1 << shift);
+	const u32 led1 = 25;
+	const u32 index1 = led1/10;
+	const u32 shift1 = (led1%10)*3;
+	const u32 mask1 = ~(0x7 << shift1);
+	gpio_base[index1] = (gpio_base[index1] & mask1) | (0x1 << shift1);
+
+
+	const u32 led2 = 24;
+	const u32 index2 = led2/10;
+	const u32 shift2 = (led2%10)*3;
+	const u32 mask2 = ~(0x7 << shift2);
+	gpio_base[index2] = (gpio_base[index2] & mask2) | (0x1 << shift2);
 
 	retval = alloc_chrdev_region(&dev, 0, 1, "myled");
 	if(retval < 0){

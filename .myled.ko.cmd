@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/raspberry_pi_robosys2019/myled.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/ubuntu/raspberry_pi_robosys2019/myled.ko /home/ubuntu/raspberry_pi_robosys2019/myled.o /home/ubuntu/raspberry_pi_robosys2019/myled.mod.o ;  true
