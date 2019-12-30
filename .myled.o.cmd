@@ -727,6 +727,14 @@ deps_/home/ubuntu/raspberry_pi_robosys2019/myled.o := \
     $(wildcard include/config/indirect/pio.h) \
   include/linux/fwnode.h \
   include/linux/vmalloc.h \
+  include/linux/slab.h \
+    $(wildcard include/config/debug/slab.h) \
+    $(wildcard include/config/failslab.h) \
+    $(wildcard include/config/have/hardened/usercopy/allocator.h) \
+    $(wildcard include/config/slab.h) \
+    $(wildcard include/config/slub.h) \
+  include/linux/kmemleak.h \
+  include/linux/kasan.h \
 
 /home/ubuntu/raspberry_pi_robosys2019/myled.o: $(deps_/home/ubuntu/raspberry_pi_robosys2019/myled.o)
 

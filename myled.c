@@ -17,43 +17,63 @@ static struct cdev cdv;
 static struct class *cls = NULL;
 static volatile u32 *gpio_base = NULL;
 
-//static ssize_t led_write(struct file* filp, const char* buf, size_t count, loff_t* pos){
-//	printk(KERN_INFO "led_write is called\n");
-//	return 1;
-//}
-
-// changed
-static ssize_t led_write(struct file* filp, char __user *buf, size_t count, loff_t* pos){
-	char *newbuf = kmalloc(sizeof(char) * count, GFP_KERNEL);
-	//int buflen = 0;
-	//buflen = strlen(buf);
-	//count = buflen;
-	char command[sizeof(char)*count];
-	if(copy_from_user(newbuf, buf, sizeof(char)*count)){
-		kfree(newbuf);
+static ssize_t led_write(struct file* filp, const char __user *buf, size_t count, loff_t* pos){
+	printk(KERN_INFO "led_write is called\n");
+	char *str = kmalloc(sizeof(count+1)*sizeof(char), GFP_KERNEL);
+	memset(str, '\0', count+1);
+	if(copy_from_user(str, buf, count)){
+		kfree(str);
 		return -EFAULT;
 	}
-	sscanf(newbuf, "%s\n", command);
-	if(strcmp(command, "0") == 0){
+	if(strcmp(str, "0\n") == 0){
 		gpio_base[10] = 1 << 25;
 	}
-	else if(strcmp(command, "1") == 0){
+	else if(strcmp(str, "1\n") == 0){
 		gpio_base[7] = 1 << 25;
 	}
-	else if(strcmp(command, "2") == 0){
+	else if(strcmp(str, "2\n") == 0){
 		gpio_base[10] = 1 << 24;
 	}
-	else if(strcmp(command, "3") == 0){
+	else if(strcmp(str, "3\n") == 0){
 		gpio_base[7] = 1 << 24;
 	}
-	printk(KERN_INFO "receive %s\n", command);
-
-	if(strcmp(command, "q1") == 0){
+	printk(KERN_INFO "receive %s", str);
+	if(strcmp(str, "q1\n") == 0){
 		printk(KERN_INFO "test message\n");
 	}
-	kfree(newbuf);
-	return 1;
+	kfree(str);
+	return count;
 }
+
+// changed
+//static ssize_t led_write(struct file* filp, char* buf, size_t count, loff_t* pos){
+//	char *newbuf = kmalloc(sizeof(char) * count, GFP_KERNEL);
+//	char command[sizeof(char)*count];
+//	if(copy_from_user(newbuf, buf, sizeof(char)*count)){
+//		kfree(newbuf);
+//		return -EFAULT;
+//	}
+//	sscanf(newbuf, "%s\n", command);
+//	if(strcmp(command, "0") == 0){
+//		gpio_base[10] = 1 << 25;
+//	}
+//	else if(strcmp(command, "1") == 0){
+//		gpio_base[7] = 1 << 25;
+//	}
+//	else if(strcmp(command, "2") == 0){
+//		gpio_base[10] = 1 << 24;
+//	}
+//	else if(strcmp(command, "3") == 0){
+//		gpio_base[7] = 1 << 24;
+//	}
+//	printk(KERN_INFO "receive %s\n", command);
+//
+//	if(strcmp(command, "q1") == 0){
+//		printk(KERN_INFO "test message\n");
+//	}
+//	kfree(newbuf);
+//	return 1;
+//}
 
 static ssize_t sushi_read(struct file* filp, char* buf, size_t count, loff_t* pos){
 	int size = 0;
