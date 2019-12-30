@@ -7,6 +7,7 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 
+MODULE_AUTHOR("Ryuichi Ueda");
 MODULE_AUTHOR("Nagasaka Takumi");
 MODULE_DESCRIPTION("driver for LED contol");
 MODULE_LICENSE("GPL");
