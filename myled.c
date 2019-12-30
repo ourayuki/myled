@@ -17,7 +17,7 @@ static struct cdev cdv;
 static struct class *cls = NULL;
 static volatile u32 *gpio_base = NULL;
 
-static ssize_t led_write(struct file* filp, const char __user *buf, size_t count, loff_t* pos){
+static ssize_t question(struct file* filp, const char __user *buf, size_t count, loff_t* pos){
 	printk(KERN_INFO "led_write is called\n");
 	char *str = kmalloc(sizeof(count+1)*sizeof(char), GFP_KERNEL);
 	memset(str, '\0', count+1);
@@ -25,71 +25,31 @@ static ssize_t led_write(struct file* filp, const char __user *buf, size_t count
 		kfree(str);
 		return -EFAULT;
 	}
-	if(strcmp(str, "0\n") == 0){
-		gpio_base[10] = 1 << 25;
-	}
-	else if(strcmp(str, "1\n") == 0){
-		gpio_base[7] = 1 << 25;
-	}
-	else if(strcmp(str, "2\n") == 0){
+	if(strcmp(str, "Q1\n") == 0){
+		printk(KERN_INFO "Q1: The quick brown ??? jumps over the lazy dog.\n   The words in [?]\nA: cat\nB: fox\n");
 		gpio_base[10] = 1 << 24;
-	}
-	else if(strcmp(str, "3\n") == 0){
+		gpio_base[10] = 1 << 25;
 		gpio_base[7] = 1 << 24;
 	}
-	printk(KERN_INFO "receive %s", str);
-	if(strcmp(str, "q1\n") == 0){
-		printk(KERN_INFO "test message\n");
+	else if(strcmp(str, "Q2\n") == 0){
+		printk(KERN_INFO "Q2: All your base are belong to ???.\n   The words in [?]\nA: cat\nB: us\n");
+		gpio_base[10] = 1 << 24;
+		gpio_base[10] = 1 << 25;
+		gpio_base[7] = 1 << 24;
+	}
+	else if(strcmp(str, "Q3\n") == 0){
+		printk(KERN_INFO "Q3: It's raining ???s and dogs.\n   The words in [?]\nA: cat\nB: girl\n");
+		gpio_base[10] = 1 << 24;
+		gpio_base[10] = 1 << 25;
+		gpio_base[7] = 1 << 25;
 	}
 	kfree(str);
 	return count;
 }
 
-// changed
-//static ssize_t led_write(struct file* filp, char* buf, size_t count, loff_t* pos){
-//	char *newbuf = kmalloc(sizeof(char) * count, GFP_KERNEL);
-//	char command[sizeof(char)*count];
-//	if(copy_from_user(newbuf, buf, sizeof(char)*count)){
-//		kfree(newbuf);
-//		return -EFAULT;
-//	}
-//	sscanf(newbuf, "%s\n", command);
-//	if(strcmp(command, "0") == 0){
-//		gpio_base[10] = 1 << 25;
-//	}
-//	else if(strcmp(command, "1") == 0){
-//		gpio_base[7] = 1 << 25;
-//	}
-//	else if(strcmp(command, "2") == 0){
-//		gpio_base[10] = 1 << 24;
-//	}
-//	else if(strcmp(command, "3") == 0){
-//		gpio_base[7] = 1 << 24;
-//	}
-//	printk(KERN_INFO "receive %s\n", command);
-//
-//	if(strcmp(command, "q1") == 0){
-//		printk(KERN_INFO "test message\n");
-//	}
-//	kfree(newbuf);
-//	return 1;
-//}
-
-static ssize_t sushi_read(struct file* filp, char* buf, size_t count, loff_t* pos){
-	int size = 0;
-	char sushi[] = {0xF0, 0x9F, 0x8D, 0xA3, 0x0A};
-	if(copy_to_user(buf+size, (const char *)sushi, sizeof(sushi))){
-		printk(KERN_INFO "sushi : copy_to_user failed\n");
-		return -EFAULT;
-	}
-	size += sizeof(sushi);
-	return size;
-};
-
 static struct file_operations led_fops = {
 	.owner = THIS_MODULE,
-	.write = led_write,
-	.read = sushi_read
+	.write = question
 };
 
 static int __init init_mod(void){
